@@ -35,7 +35,7 @@ const Login = () => {
             errors.password = 'Please enter Pass word'
         }else{
 
-            if(loginData.password.length < 8) errors.password = "Password must be greater than or equal 8 characters"
+            if(loginData.password.length < 6) errors.password = "Password must be greater than or equal 6 characters"
         }
 
         if(Object.keys(errors).length > 0) {
@@ -50,9 +50,9 @@ const Login = () => {
     const onSubmit = ()=> {
         let valid = validateForm();
         if(valid){
+            console.log("Đã vào login.js react",loginData)
             dispatch(actions.controlLoading(true))
             requestApi('/auth/login','POST',loginData).then((res)=> {
-                console.log("Đã vào login.js react")
                 console.log(res)
                 localStorage.setItem('access_token', res.data.access_token);
                 localStorage.setItem('refresh_token', res.data.refresh_token);
@@ -86,9 +86,16 @@ const Login = () => {
     }
     return (
         <div id="layoutAuthentication" className="bg-primary">
+            <div id='layoutAuthentication_header' >
+                <div className="d-flex justify-content-center mt-5">
+                <img src={'../assets/images/water-level.png'} width={150}/>
+                </div>
+            </div>
+            
             <div id="layoutAuthentication_content">
                 <main>
                     <div className="container">
+                      
                         <div className="row justify-content-center">
                             <div className="col-lg-5">
                                 <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -126,7 +133,7 @@ const Login = () => {
                 <footer className="py-4 bg-light mt-auto">
                     <div className="container-fluid px-4">
                         <div className="d-flex align-items-center justify-content-between small">
-                            <div className="text-muted">Copyright &copy; Your Website 2021</div>
+                        <div className="text-muted">Copyright &copy; Bảo Lê - Nhóm 12 - 2024</div>
                             <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;

@@ -96,11 +96,11 @@ const DataTable = (props) => {
                     <div className="col-sm-12 col-md-6">
                         <label className='d-inline-flex'>Show
                             <select name="example_length" className="form-select form-select-sm ms-1 me-1" onChange={onChangeOption}>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
                                 <option value="5">5</option>
                                 <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
                             </select> entries
                         </label>
                     </div>

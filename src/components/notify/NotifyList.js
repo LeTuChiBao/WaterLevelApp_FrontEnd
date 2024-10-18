@@ -6,14 +6,14 @@ import * as actions from '../../redux/actions'
 import { Button, Modal } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import {formatDateTime} from '../../helpers/common'
-
-const PostList = () => {
+import { toast } from 'react-toastify'
+const NotifyList = () => {
     const dispatch = useDispatch()
 
-    const [posts, setPosts] = useState([])
+    const [sensors, setSensors] = useState([])
     const [numOfPage, setNumOfPage] = useState(1)
     const [currentPage, setCurrentPage] = useState(1)
-    const [itemsPerPage, setItemsPerPage] = useState(1)
+    const [itemsPerPage, setItemsPerPage] = useState(5)
     const [searchString, setSearchString] = useState('')
     const [selectedRows, setSelectedRows] = useState([])
     const [deleteItem, setDeleteItem] = useState(null)
@@ -27,34 +27,37 @@ const PostList = () => {
             element: row => row.id
         },
         {
-            name: "Title",
-            element: row => row.title
+            name: "Message",
+            element: row => {
+                return row.message
+            }
         },
         {
-            name: "Summary",
-            element: row => row.summary
+            name: "Water Level",
+            element: row => row.reading?.water_level
         },
         {
-            name: "Thumbnail",
-            element: row => <img width="80px"  src={process.env.REACT_APP_URL+'/'+row.thumbnail}></img>
+            name: "User Read",
+            element: row => row.isReading === true ? 'true' :'false'
         },
         {
-            name: "Status",
-            element: row => row.status == 1 ? "Active" : "Inactive"
+            name: "User Name",
+            element: row => {
+                return `${row.user?.firstName } ${row.user?.lastName }`
+            }
+        },
+        {
+            name: "User Email",
+            element: row => row.user?.email
         },
         {
             name: "Created at",
             element: row => formatDateTime(row.created_at)
         },
         {
-            name: "Updated at",
-            element: row => formatDateTime(row.updated_at)
-        },
-        {
             name: "Actions",
             element: row => (
                 <>
-                    <Link to={`/post/edit/${row.id}`} className="btn btn-sm btn-warning me-1"><i className="fas fa-pencil-alt" ></i></Link>
                     <button type="button" className="btn btn-sm btn-danger me-1" onClick={() => handleDelete(row.id)}><i className="fa fa-trash"></i> </button>
                 </>
             )
@@ -77,26 +80,33 @@ const PostList = () => {
     const requestDeleteApi = () => {
         if (deleteType === 'single') {
             dispatch(actions.controlLoading(true))
-            requestApi(`/posts/${deleteItem}`, 'DELETE', []).then(response => {
+            requestApi(`/notify/${deleteItem}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
                 dispatch(actions.controlLoading(false))
+                toast.success(`Notify ${deleteItem} has been deleted successfully`, {position: "top-center", autoClose: 2000})
             }).catch(err => {
                 console.log(err)
                 setShowModal(false)
                 dispatch(actions.controlLoading(false))
+                toast.error( err, {position: "top-center", autoClose: 2000})
             })
-        } else {
+        } 
+        else {
             dispatch(actions.controlLoading(true))
-            requestApi(`/posts/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
+            console.log("ĐÃ vào xóa ", selectedRows.toString())
+            requestApi(`/notify/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
+                toast.success(`All Notify selected: ${selectedRows.toString()} has been deleted successfully`, {position: "top-center", autoClose: 2000})
                 setSelectedRows([])
                 dispatch(actions.controlLoading(false))
+                
             }).catch(err => {
                 console.log(err)
                 setShowModal(false)
                 dispatch(actions.controlLoading(false))
+                toast.error( err, {position: "top-center", autoClose: 2000})
             })
         }
     }
@@ -104,9 +114,10 @@ const PostList = () => {
     useEffect(() => {
         dispatch(actions.controlLoading(true))
         let query = `?limit=${itemsPerPage}&page=${currentPage}&search=${searchString}`
-        requestApi(`/posts${query}`, 'GET', []).then(response => {
-            console.log("response=> ", response)
-            setPosts(response.data.data)
+        console.log(query)
+        requestApi(`/notify${query}`, 'GET', []).then(response => {
+            console.log("Notify Get All=> ", response)
+            setSensors(response.data.data)
             setNumOfPage(response.data.lastPage)
             dispatch(actions.controlLoading(false))
         }).catch(err => {
@@ -119,18 +130,18 @@ const PostList = () => {
         <div id="layoutSidenav_content">
             <main>
                 <div className="container-fluid px-4">
-                    <h1 className="mt-4">Tables</h1>
+                    <h1 className="mt-4">Tables Notify</h1>
                     <ol className="breadcrumb mb-4">
                         <li className="breadcrumb-item"><Link to='/'>Dashboard</Link></li>
                         <li className="breadcrumb-item active">Tables</li>
                     </ol>
                     <div className='mb-3'>
-                        <Link className='btn btn-sm btn-success me-2' to='/post/add'><i className="fa fa-plus"></i> Add new</Link>
+                        <Link className='btn btn-sm btn-success me-2' to='/notify/add'><i className="fa fa-plus"></i> Add new</Link>
                         {selectedRows.length > 0 && <button type='button' className='btn btn-sm btn-danger' onClick={handleMultiDelete}><i className="fa fa-trash"></i> Delete</button>}
                     </div>
                     <DataTable
-                        name="List Posts"
-                        data={posts}
+                        name="List Notifies"
+                        data={sensors}
                         columns={columns}
                         numOfPage={numOfPage}
                         currentPage={currentPage}
@@ -163,4 +174,4 @@ const PostList = () => {
     )
 }
 
-export default PostList
+export default NotifyList

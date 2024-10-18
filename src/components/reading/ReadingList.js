@@ -7,10 +7,10 @@ import { Button, Modal } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import {formatDateTime} from '../../helpers/common'
 import { toast } from 'react-toastify'
-const UserList = () => {
+const ReadingList = () => {
     const dispatch = useDispatch()
 
-    const [users, setUsers] = useState([])
+    const [sensors, setSensors] = useState([])
     const [numOfPage, setNumOfPage] = useState(1)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(5)
@@ -27,31 +27,16 @@ const UserList = () => {
             element: row => row.id
         },
         {
-            name: "First name",
-            element: row => row.firstName
-        },
-        {
-            name: "Last name",
-            element: row => row.lastName
-        },
-        {
-            name: "Email",
-            element: row => row.email
-        },
-        {
-            name: "Role",
-            element: row => row.role?.name
-        },
-        {
-            name: "Region",
-            element: row =>  {
-               return `${row.region.ward} - ${row.region.district}`
+            name: "Water Level",
+            element: row => {
+                return `${row.water_level } m`
             }
         },
         {
-            name: "Status",
-            element: row => row.status == 1 ? "Active" : "Inactive"
+            name: "By Sensor",
+            element: row => row.sensor?.name
         },
+     
         {
             name: "Created at",
             element: row => formatDateTime(row.created_at)
@@ -64,7 +49,7 @@ const UserList = () => {
             name: "Actions",
             element: row => (
                 <>
-                    <Link to={`/user/edit/${row.id}`} className="btn btn-sm btn-warning me-1"><i className="fas fa-pencil-alt"></i> </Link>
+                    <Link to={`/reading/edit/${row.id}`} className="btn btn-sm btn-warning me-1"><i className="fas fa-pencil-alt"></i> </Link>
                     <button type="button" className="btn btn-sm btn-danger me-1" onClick={() => handleDelete(row.id)}><i className="fa fa-trash"></i> </button>
                 </>
             )
@@ -87,23 +72,25 @@ const UserList = () => {
     const requestDeleteApi = () => {
         if (deleteType === 'single') {
             dispatch(actions.controlLoading(true))
-            requestApi(`/users/${deleteItem}`, 'DELETE', []).then(response => {
+            requestApi(`/readings/${deleteItem}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
                 dispatch(actions.controlLoading(false))
-                toast.success("User has been deleted successfully", {position: "top-center", autoClose: 2000})
+                toast.success(`Reading ${deleteItem} has been deleted successfully`, {position: "top-center", autoClose: 2000})
             }).catch(err => {
                 console.log(err)
                 setShowModal(false)
                 dispatch(actions.controlLoading(false))
                 toast.error( err, {position: "top-center", autoClose: 2000})
             })
-        } else {
+        } 
+        else {
             dispatch(actions.controlLoading(true))
-            requestApi(`/users/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
+            console.log("ĐÃ vào xóa ", selectedRows.toString())
+            requestApi(`/readings/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
-                toast.success(`All User selected: ${selectedRows.toString()} has been deleted successfully`, {position: "top-center", autoClose: 2000})
+                toast.success(`All Readings selected: ${selectedRows.toString()} has been deleted successfully`, {position: "top-center", autoClose: 2000})
                 setSelectedRows([])
                 dispatch(actions.controlLoading(false))
                 
@@ -118,11 +105,11 @@ const UserList = () => {
 
     useEffect(() => {
         dispatch(actions.controlLoading(true))
-        let query = `?limit=${itemsPerPage}&page=${currentPage}&search=${searchString}`
+        let query = `?limit=${itemsPerPage}&page=${currentPage}&water_level=${searchString}`
         console.log(query)
-        requestApi(`/users${query}`, 'GET', []).then(response => {
-            console.log("response=> ", response)
-            setUsers(response.data.data)
+        requestApi(`/readings/params${query}`, 'GET', []).then(response => {
+            console.log("Reading Get All=> ", response)
+            setSensors(response.data.data)
             setNumOfPage(response.data.lastPage)
             dispatch(actions.controlLoading(false))
         }).catch(err => {
@@ -141,12 +128,12 @@ const UserList = () => {
                         <li className="breadcrumb-item active">Tables</li>
                     </ol>
                     <div className='mb-3'>
-                        <Link className='btn btn-sm btn-success me-2' to='/user/add'><i className="fa fa-plus"></i> Add new</Link>
+                        <Link className='btn btn-sm btn-success me-2' to='/reading/add'><i className="fa fa-plus"></i> Add new</Link>
                         {selectedRows.length > 0 && <button type='button' className='btn btn-sm btn-danger' onClick={handleMultiDelete}><i className="fa fa-trash"></i> Delete</button>}
                     </div>
                     <DataTable
-                        name="List Users"
-                        data={users}
+                        name="List Readings"
+                        data={sensors}
                         columns={columns}
                         numOfPage={numOfPage}
                         currentPage={currentPage}
@@ -179,4 +166,4 @@ const UserList = () => {
     )
 }
 
-export default UserList
+export default ReadingList

@@ -15,9 +15,18 @@ import UserAdd from './components/user/UserAdd';
 import UserUpdate from './components/user/UserUpdate';
 import PageNotFound from './components/PageNotFound';
 import Profile from './components/Profile';
-import PostList from './components/post/PostList';
-import PostAdd from './components/post/PostAdd';
-import PostUpdate from './components/post/PostUpdate';
+import RegionList from './components/region/RegionList';
+import RegionAdd from './components/region/RegionAdd';
+import RegionUpdate from './components/region/RegionUpdate';
+import SensorList from './components/sensor/SensorList';
+import SensorAdd from './components/sensor/SensorAdd';
+import SensorUpdate from './components/sensor/SensorUpdate';
+import ReadingList from './components/reading/ReadingList';
+import ReadingAdd from './components/reading/ReadingAdd';
+import ReadingUpdate from './components/reading/ReadingUpdate';
+import NotifyList from './components/notify/NotifyList';
+import NotifyAdd from './components/notify/NotifyAdd';
+import MyNotify from './components/notify/MyNotify';
 
 function App() {
   return (
@@ -30,9 +39,18 @@ function App() {
                     <Route path='/user/add' element={<UserAdd/>}/>
                     <Route path='/user/edit/:id' element={<UserUpdate/>}/>
                     <Route path='/profile' element={<Profile/>}/>
-                    <Route path='/posts' element={<PostList/>}/>
-                    <Route path='/post/add' element={<PostAdd/>}/>
-                    <Route path='/post/edit/:id' element={<PostUpdate/>}/>
+                    <Route path='/regions' element={<RegionList/>}/>
+                    <Route path='/region/add' element={<RegionAdd/>}/>
+                    <Route path='/region/edit/:id' element={<RegionUpdate/>}/>
+                    <Route path='/sensors' element={<SensorList/>}/>
+                    <Route path='/sensor/add' element={<SensorAdd/>}/>
+                    <Route path='/sensor/edit/:id' element={<SensorUpdate/>}/>
+                    <Route path='/readings' element={<ReadingList/>}/>
+                    <Route path='/reading/add' element={<ReadingAdd/>}/>
+                    <Route path='/reading/edit/:id' element={<ReadingUpdate/>}/>
+                    <Route path='/notifies' element={<NotifyList/>}/>
+                    <Route path='/notify/add' element={<NotifyAdd/>}/>
+                    <Route path='user/notify' element={<MyNotify/>}/>
 
                 </Route>
             </Route>

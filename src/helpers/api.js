@@ -37,6 +37,7 @@ export default function requestApi(endpoint, method, body = [], responseType='js
                         refresh_token : localStorage.getItem('refresh_token')
                     })
                     const {access_token, refresh_token} = result.data;
+                    
                     localStorage.setItem('access_token', access_token);
                     localStorage.setItem('refresh_token', refresh_token);
         

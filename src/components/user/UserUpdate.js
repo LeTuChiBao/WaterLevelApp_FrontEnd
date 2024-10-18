@@ -13,6 +13,7 @@ const UserUpdate = () => {
     const navigate = useNavigate()
     const {register,setValue, handleSubmit, formState:{errors}} = useForm()
     const [roles, setRoles]= useState([])
+    const [regions, setRegions]= useState([])
 
     useEffect(()=> {
         dispatch(actions.controlLoading(true))
@@ -25,18 +26,29 @@ const UserUpdate = () => {
            }
            const getDetailUser = async()=> {
                 const res = await requestApi(`/users/${param.id}`,'GET')
-                console.log(res)
-                const fields = ['firstName', 'lastName', 'status', 'role']
+                console.log('getDetailUser',res)
+                const fields = ['firstName', 'lastName', 'status', 'role','region']
                 fields.forEach((field) => {
                     if(field === 'role') {
-                        setValue(field,res.data[field]?.id)
-                    }else {
+                        setValue('roleId',res.data[field]?.id)
+                    }else if(field === 'region'){
+                        setValue('regionId',res.data[field]?.id)
+                    }
+                    else {
                         setValue(field,res.data[field])
                     }
                     
                 })
-           }
-           getRoles()
+            }
+           const getRegions = async()=> {
+            const res = await requestApi('/regions','GET')
+            console.log("res Regions => ", res)
+            dispatch(actions.controlLoading(false))
+            setRegions(res.data)
+            }
+
+            getRoles()
+            getRegions()
            getDetailUser()
         } catch (error) {
             console.log(actions)
@@ -52,7 +64,7 @@ const UserUpdate = () => {
             const res = await requestApi(`/users/${param.id}`,'PUT', data)
             console.log("response =>", res)
             dispatch(actions.controlLoading(false))
-            toast.success("User has been updated successfully", {position: "top-center", autoClose: 2000})
+            toast.success(` User ${param.id} has been updated successfully` , {position: "top-center", autoClose: 2000})
             setTimeout(()=> navigate('/users'),3000)
         } catch (error) {
             dispatch(actions.controlLoading(false))
@@ -78,7 +90,7 @@ const UserUpdate = () => {
                         </div>
                         <div className="card-body">
                             <div className="row mb-3">
-                                <form>
+                                <form className="d-flex gap-3 justify-content-center">
                                     <div className="col-md-6">
                                         <div className="mb-3 mt-3">
                                             <label className="form-label">First Name:</label> 
@@ -96,21 +108,38 @@ const UserUpdate = () => {
                                                         <option value="1">Active</option>
                                                         <option value="2">Inactive</option>
                                                 </select>
-                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3 mt-3">
+                                            <label className="form-label">Roles:</label> 
+                                            <select {...register("roleId",{required: "Role is required."})} className="form-select" >
+                                                    <option value="">--Select a Role--</option>
+                                                    {roles.map(roleId=> {
+                                                        return <option key={roleId.id} value={roleId.id}>{roleId.name}</option>
+                                                    })}
+                                            </select>
+                                            {errors.roleId && <p style={{color: 'red'}}>{errors.roleId.message}</p>}
+                                        </div>
 
-                                            <div className="mb-3">
-                                                <label className="form-label">Roles:</label> 
-                                                <select {...register("role",{required: "Category is required."})} className="form-select" >
-                                                        <option value="">--Select a Role--</option>
-                                                        {roles.map(role => {
-                                                            return <option key={role.id} value={role.id}>{role.name}</option>
-                                                        })}
-                                                </select>
-                                                {errors.role && <p style={{color: 'red'}}>{errors.role.message}</p>}
-                                            </div>
-                                        <button type="button" onClick={handleSubmit(handleSubmitFormUpdate)} className="btn btn-success">Submit</button>
+                                        <div className="mb-3 mt-3">
+                                            <label className="form-label">Regions:</label> 
+                                            <select {...register("regionId",{required: "Region is required."})} className="form-select" >
+                                                    <option value="">--Select a Region--</option>
+                                                    {regions.map(regionId=> {
+                                                        return <option key={regionId.id} value={regionId.id}>{regionId.ward} - {regionId.district}</option>
+                                                    })}
+                                            </select>
+                                            {errors.regionId && <p style={{color: 'red'}}>{errors.regionId.message}</p>}
+                                        </div>
+                                        
                                     </div>
                                 </form>
+                            </div>
+                            <div className="row mb-3">
+                                     <div className="col-12 mt-3 text-center">
+                                            <button type="button" onClick={handleSubmit(handleSubmitFormUpdate)} className="btn btn-success w-50">Submit</button>
+                                    </div>
                             </div>
                         </div>
                     </div>

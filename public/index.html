@@ -15,6 +15,7 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -24,10 +25,29 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Water level</title>
     <!-- <link rel="stylesheet" href="assets/css/styles.css"> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.15/"></script>
+    <style>
+
+  .card-argis {
+    position: relative;
+    height: 700px; 
+    overflow: scroll; 
+  }
+
+   #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

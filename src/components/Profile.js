@@ -17,8 +17,9 @@ const Profile = () => {
         dispatch(actions.controlLoading(true))
         requestApi('/users/profile','GET').then(res=>{
             console.log(res);
-            setProfileData({...res.data, avatar: process.env.REACT_APP_URL+'/'+res.data.avatar})
-
+            if(res.data.avatar){
+             setProfileData({...res.data, avatar: process.env.REACT_APP_URL+'/'+res.data.avatar})
+            }
             setIsId(res.data.id)
 
             const fields = ['firstName', 'lastName', 'status']
@@ -86,7 +87,7 @@ const Profile = () => {
                     <div className="card-body">
                         <div className="row mb-3">
                             <div className="col-md-8">
-                                <img src={profileData.avatar ? profileData.avatar : "../assets/images/default_avatar.jpg"} className="img-thumbnail rounded mb-2" alt=""></img>
+                                <img src={profileData.avatar ? profileData.avatar : "/assets/images/default_avatar.jpg"} className="img-thumbnail rounded mb-2 w-50 d-block" alt="avatar"></img>
                                 <div className="input-file float-start">
                                     <label htmlFor="file" className="btn-file btn-sm btn btn-primary">Browse file</label>
                                     <input id="file" type="file" onChange={onImageChange} accept="image/*"></input>
